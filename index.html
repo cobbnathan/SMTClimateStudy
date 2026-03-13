@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Music Theory Faculty Directory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-mid: #2a3d6b;
+    --gold: #c8a84b;
+    --gold-light: #e8d18a;
+    --cream: #f8f6f1;
+    --cream-dark: #ede9e0;
+    --text: #2c2c2c;
+    --text-muted: #6b6460;
+    --border: #ddd8cc;
+    --white: #ffffff;
+    --radius: 8px;
+    --shadow-hover: 0 6px 20px rgba(26,39,68,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ---- HEADER ---- */
+  .site-header {
+    background: var(--navy);
+    color: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .header-title-block { flex: 1; min-width: 0; }
+  .header-title-block h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .header-title-block p {
+    font-size: 0.72rem;
+    color: var(--gold-light);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 0.15rem;
+  }
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 2;
+  }
+  .search-wrap { position: relative; flex: 1; }
+  .search-wrap svg {
+    position: absolute;
+    left: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  #searchInput {
+    width: 100%;
+    padding: 0.55rem 0.75rem 0.55rem 2.2rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: var(--radius);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  #searchInput::placeholder { color: rgba(255,255,255,0.45); }
+  #searchInput:focus { outline: none; background: rgba(255,255,255,0.15); border-color: var(--gold); }
+  .filter-select {
+    padding: 0.55rem 1.8rem 0.55rem 0.7rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: var(--radius);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23ffffff' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    background-color: rgba(255,255,255,0.1);
+  }
+  .filter-select option { background: var(--navy); color: var(--white); }
+  .filter-select:focus { outline: none; border-color: var(--gold); }
+  .suggest-btn {
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.55rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .suggest-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  /* ---- RESULTS BAR ---- */
+  .results-bar {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  #resultCount { font-weight: 500; color: var(--navy-mid); }
+
+  /* ---- LOADING ---- */
+  #loadingState {
+    max-width: 1400px;
+    margin: 4rem auto;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  #loadingState .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--navy-mid);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 1rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---- GRID ---- */
+  .grid-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.65rem;
+  }
+
+  /* ---- CARD ---- */
+  .instructor-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 0.9rem;
+    cursor: pointer;
+    transition: box-shadow 0.18s, transform 0.18s, border-color 0.18s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .instructor-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--navy-mid);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .instructor-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); border-color: var(--navy-mid); }
+  .instructor-card:hover::before { opacity: 1; }
+  .card-name {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.3;
+  }
+  .card-institution {
+    font-size: 0.75rem;
+    color: var(--navy-mid);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .card-sub {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+  }
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.1rem;
+  }
+  .badge {
+    font-size: 0.67rem;
+    padding: 0.18rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .badge-title { background: var(--cream-dark); color: var(--navy-mid); }
+  .badge-degree { background: #eef2fa; color: #2a3d6b; }
+  .badge-status-ft      { background: #e8f4ec; color: #2a6040; }
+  .badge-status-adjunct { background: #fef3e2; color: #8a5c10; }
+  .badge-status-emeritus{ background: #ede9f4; color: #4a3080; }
+  .badge-status-other   { background: #f0f0f0; color: #555; }
+  .card-email {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0.05rem;
+  }
+
+  /* ---- NO RESULTS ---- */
+  .no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+  }
+  .no-results h3 { font-family: 'Libre Baskerville', serif; font-size: 1.1rem; color: var(--navy); margin-bottom: 0.5rem; }
+
+  /* ---- MODAL ---- */
+  #modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,18,40,0.55);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    backdrop-filter: blur(3px);
+  }
+  #modal.open { display: flex; }
+  .modal-content {
+    background: var(--white);
+    border-radius: 12px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    position: relative;
+    animation: modalIn 0.22s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+  }
+  .modal-header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 1.3rem 1.5rem 1.1rem;
+    border-radius: 12px 12px 0 0;
+    position: relative;
+  }
+  .modal-header h2 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.3;
+    padding-right: 2rem;
+  }
+  .modal-header h2 a {
+    color: var(--white);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200,168,75,0.5);
+    transition: border-color 0.15s;
+  }
+  .modal-header h2 a:hover { border-color: var(--gold); }
+  .modal-header .modal-institution {
+    font-size: 0.8rem;
+    color: var(--gold-light);
+    margin-top: 0.3rem;
+  }
+  .modal-profile-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.45rem;
+    font-size: 0.72rem;
+    color: var(--gold-light);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+  .modal-profile-link:hover { opacity: 1; }
+  .modal-close {
+    position: absolute;
+    top: 0.9rem; right: 1rem;
+    background: none; border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+  .modal-close:hover { color: var(--white); }
+  .modal-body {
+    padding: 1.2rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .modal-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .modal-section { display: flex; flex-direction: column; gap: 0.25rem; }
+  .modal-section-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .modal-section-value {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .modal-section-value a { color: var(--navy-mid); text-decoration: none; }
+  .modal-section-value a:hover { text-decoration: underline; }
+  .modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1rem;
+  }
+  .modal-divider { border: none; border-top: 1px solid var(--border); }
+  .modal-suggest-link { font-size: 0.78rem; color: var(--text-muted); text-align: center; }
+  .modal-suggest-link a { color: var(--navy-mid); font-weight: 500; }
+
+  /* ---- PAGINATION ---- */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1.5rem 2.5rem;
+    flex-wrap: wrap;
+  }
+  .page-btn {
+    min-width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    padding: 0 0.5rem;
+  }
+  .page-btn:hover { border-color: var(--navy-mid); color: var(--navy); }
+  .page-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); font-weight: 600; }
+  .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .page-ellipsis { color: var(--text-muted); font-size: 0.82rem; padding: 0 0.2rem; }
+
+  /* ---- MOBILE ---- */
+  @media (max-width: 700px) {
+    .header-inner { flex-wrap: wrap; gap: 0.75rem; }
+    .header-controls { flex-wrap: wrap; width: 100%; }
+    .grid-container { grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0.75rem; }
+    .modal-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .grid-container { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-title-block">
+      <h1>Music Theory Faculty Directory</h1>
+      <p>United States</p>
+    </div>
+    <div class="header-controls">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search name or institution…" autocomplete="off" spellcheck="false" />
+      </div>
+      <select class="filter-select" id="statusFilter">
+        <option value="">All Statuses</option>
+        <option value="FT">Full-Time</option>
+        <option value="Adjunct">Adjunct</option>
+        <option value="Lecturer">Lecturer</option>
+        <option value="Instructor">Instructor</option>
+        <option value="Emeritus">Emeritus</option>
+        <option value="VAP">VAP</option>
+        <option value="Artist in Residence">Artist in Residence</option>
+      </select>
+      <select class="filter-select" id="degreeFilter">
+        <option value="">All Degrees</option>
+        <option value="Doctorate">Doctorate</option>
+        <option value="Masters">Masters</option>
+        <option value="Non-music Doctorate">Non-music Doctorate</option>
+        <option value="Bachelor's">Bachelor's</option>
+      </select>
+      <button class="suggest-btn" id="suggestBtn">Suggest an Update</button>
+    </div>
+  </div>
+</header>
+
+<div class="results-bar">
+  <span id="resultCount"></span>
+  <span id="pageInfo"></span>
+</div>
+
+<div id="loadingState">
+  <div class="spinner"></div>
+  Loading faculty data…
+</div>
+
+<div class="grid-container" id="grid" style="display:none"></div>
+<div class="pagination" id="pagination"></div>
+
+<!-- Modal -->
+<div id="modal">
+  <div class="modal-content">
+    <div class="modal-header" id="modalHeader">
+      <h2 id="modalName"></h2>
+      <p class="modal-institution" id="modalInstitution"></p>
+      <button class="modal-close" id="modalClose">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG — edit these two lines ───────────────────────────
+const DATA_URL    = 'instructors.json';
+const SUGGEST_URL = 'https://forms.google.com/YOUR_FORM_ID'; // ← replace after creating your Google Form
+// ────────────────────────────────────────────────────────────
+
+const PER_PAGE = 60;
+let ALL_INSTRUCTORS = [];
+let filtered = [];
+let currentPage = 1;
+
+function esc(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ---- BADGES (tile: Status + Degree Type) ----
+function statusBadge(status) {
+  if (!status) return '';
+  const label = status === 'FT' ? 'Full-Time' : status;
+  let cls = 'badge-status-other';
+  if (status === 'FT')       cls = 'badge-status-ft';
+  else if (status === 'Adjunct')  cls = 'badge-status-adjunct';
+  else if (status === 'Emeritus') cls = 'badge-status-emeritus';
+  return `<span class="badge ${cls}">${esc(label)}</span>`;
+}
+function degreeTypeBadge(dt) {
+  if (!dt || dt === 'Unknown' || dt === 'unknown') return '';
+  return `<span class="badge badge-degree">${esc(dt)}</span>`;
+}
+
+// ---- RENDER CARDS ----
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  const start = (currentPage - 1) * PER_PAGE;
+  const page  = filtered.slice(start, start + PER_PAGE);
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="no-results"><h3>No results found</h3><p>Try a different name or institution.</p></div>`;
+    document.getElementById('pagination').innerHTML = '';
+    updateCounts();
+    return;
+  }
+
+  grid.innerHTML = page.map((p, i) => {
+    const idx = start + i;
+    const degInst = p.degree_granting_inst
+      ? `<div class="card-sub">${esc(p.degree_granting_inst)}${p.terminal_degree ? ' · ' + esc(p.terminal_degree) : ''}</div>`
+      : '';
+    const email = p.email ? `<div class="card-email">${esc(p.email)}</div>` : '';
+    return `<div class="instructor-card" data-idx="${idx}" tabindex="0" role="button" aria-label="View details for ${esc(p.name)}">
+      <div class="card-name">${esc(p.name)}</div>
+      <div class="card-institution">${esc(p.institution)}</div>
+      <div class="card-meta">
+        ${statusBadge(p.status)}
+        ${degreeTypeBadge(p.degree_type)}
+      </div>
+      ${degInst}
+      ${email}
+    </div>`;
+  }).join('');
+
+  grid.querySelectorAll('.instructor-card').forEach(card => {
+    const open = () => openModal(filtered[+card.dataset.idx]);
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+  });
+
+  renderPagination();
+  updateCounts();
+}
+
+// ---- PAGINATION ----
+function renderPagination() {
+  const total = Math.ceil(filtered.length / PER_PAGE);
+  const pg = document.getElementById('pagination');
+  if (total <= 1) { pg.innerHTML = ''; return; }
+
+  let html = `<button class="page-btn" ${currentPage===1?'disabled':''} onclick="goPage(${currentPage-1})">&#8592;</button>`;
+  const pages = [1];
+  if (currentPage > 3) pages.push('...');
+  for (let i = Math.max(2, currentPage-1); i <= Math.min(total-1, currentPage+1); i++) pages.push(i);
+  if (currentPage < total - 2) pages.push('...');
+  if (total > 1) pages.push(total);
+  pages.forEach(p => {
+    if (p === '...') html += `<span class="page-ellipsis">…</span>`;
+    else html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  });
+  html += `<button class="page-btn" ${currentPage===total?'disabled':''} onclick="goPage(${currentPage+1})">&#8594;</button>`;
+  pg.innerHTML = html;
+}
+
+function goPage(n) {
+  currentPage = n;
+  renderGrid();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateCounts() {
+  const start = (currentPage-1)*PER_PAGE + 1;
+  const end   = Math.min(currentPage*PER_PAGE, filtered.length);
+  const total = Math.ceil(filtered.length / PER_PAGE);
+  document.getElementById('resultCount').textContent = `${filtered.length.toLocaleString()} instructors`;
+  document.getElementById('pageInfo').textContent = filtered.length > PER_PAGE
+    ? `Showing ${start}–${end} · Page ${currentPage} of ${total}` : '';
+}
+
+// ---- FILTERS ----
+function applyFilters() {
+  const query  = document.getElementById('searchInput').value.trim().toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+  const degree = document.getElementById('degreeFilter').value;
+
+  filtered = ALL_INSTRUCTORS.filter(p => {
+    if (query && !(p.name + ' ' + p.institution).toLowerCase().includes(query)) return false;
+    if (status && p.status !== status) return false;
+    if (degree && p.degree_type !== degree) return false;
+    return true;
+  });
+
+  currentPage = 1;
+  renderGrid();
+}
+
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+document.getElementById('statusFilter').addEventListener('change', applyFilters);
+document.getElementById('degreeFilter').addEventListener('change', applyFilters);
+
+// ---- MODAL ----
+function openModal(p) {
+  const nameEl = document.getElementById('modalName');
+  // Name links to profile if available
+  nameEl.innerHTML = p.profile_url
+    ? `<a href="${esc(p.profile_url)}" target="_blank" rel="noopener">${esc(p.name)}</a>`
+    : esc(p.name || '—');
+
+  document.getElementById('modalInstitution').textContent = p.institution || '—';
+
+  // Profile link row beneath institution in header
+  const existingLink = document.getElementById('modalProfileLink');
+  if (existingLink) existingLink.remove();
+  if (p.profile_url) {
+    const a = document.createElement('a');
+    a.id = 'modalProfileLink';
+    a.href = p.profile_url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.className = 'modal-profile-link';
+    a.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>View faculty profile`;
+    document.getElementById('modalHeader').appendChild(a);
+  }
+
+  const statusLabel = p.status === 'FT' ? 'Full-Time' : (p.status || '');
+  const isValidDegType = p.degree_type && p.degree_type !== 'unknown' && p.degree_type !== 'Unknown';
+
+  let html = '';
+
+  // Top badges (status + degree type)
+  const b1 = statusLabel ? `<span class="badge badge-title">${esc(statusLabel)}</span>` : '';
+  const b2 = isValidDegType ? `<span class="badge badge-degree">${esc(p.degree_type)}</span>` : '';
+  if (b1 || b2) html += `<div class="modal-badges">${b1}${b2}</div><hr class="modal-divider">`;
+
+  // Primary fields
+  [
+    { label: 'Title',  value: p.title },
+    { label: 'Email',  value: p.email, href: p.email ? `mailto:${p.email}` : null },
+  ].forEach(f => {
+    if (!f.value) return;
+    const val = f.href ? `<a href="${esc(f.href)}">${esc(f.value)}</a>` : esc(f.value);
+    html += `<div class="modal-section">
+      <div class="modal-section-label">${f.label}</div>
+      <div class="modal-section-value">${val}</div>
+    </div>`;
+  });
+
+  html += `<hr class="modal-divider"><div class="modal-grid">`;
+  [
+    { label: 'Terminal Degree',            value: p.terminal_degree },
+    { label: 'Degree Type',                value: isValidDegType ? p.degree_type : null },
+    { label: 'Degree-Granting Institution',value: p.degree_granting_inst },
+    { label: 'Degree Specialization',      value: p.degree_specialization },
+  ].forEach(f => {
+    html += `<div class="modal-section">
+      <div class="modal-section-label">${f.label}</div>
+      <div class="modal-section-value">${esc(f.value || '—')}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Optional extra fields
+  const extras = [
+    { label: 'Other Areas Taught', value: p.other_areas },
+    { label: 'Notes',              value: p.notes },
+  ].filter(f => f.value);
+  if (extras.length) {
+    html += `<hr class="modal-divider">`;
+    extras.forEach(f => {
+      html += `<div class="modal-section">
+        <div class="modal-section-label">${f.label}</div>
+        <div class="modal-section-value">${esc(f.value)}</div>
+      </div>`;
+    });
+  }
+
+  html += `<hr class="modal-divider">
+    <p class="modal-suggest-link">See an error? <a href="${esc(SUGGEST_URL)}" target="_blank" rel="noopener">Suggest an update</a></p>`;
+
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ---- SUGGEST BUTTON ----
+document.getElementById('suggestBtn').addEventListener('click', () => window.open(SUGGEST_URL, '_blank'));
+
+// ---- INIT: fetch JSON ----
+async function init() {
+  try {
+    const res = await fetch(DATA_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    ALL_INSTRUCTORS = await res.json();
+    filtered = [...ALL_INSTRUCTORS];
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('grid').style.display = 'grid';
+    renderGrid();
+  } catch (err) {
+    document.getElementById('loadingState').innerHTML =
+      `<p style="color:#a33030;font-weight:600">⚠ Could not load faculty data.</p>
+       <p style="margin-top:0.5rem;font-size:0.82rem;color:#888">${err.message}<br><br>
+       Make sure <code>instructors.json</code> is in the same folder as this HTML file,<br>
+       and that you're serving it from a web server (not opening the file directly).</p>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
