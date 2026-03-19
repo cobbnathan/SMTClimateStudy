@@ -269,8 +269,6 @@
     width: 100%;
     max-height: 85vh;
     overflow: auto;
-    display: flex;
-    flex-direction: column;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     position: relative;
     animation: modalIn 0.22s ease;
@@ -284,8 +282,9 @@
     color: var(--white);
     padding: 1.3rem 1.5rem 1.1rem;
     border-radius: 12px 12px 0 0;
-    position: relative;
-    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
   .modal-header h2 {
     font-family: 'Libre Baskerville', serif;
@@ -337,7 +336,7 @@
     grid-column: 3;
     position: static;
     justify-self: end;
-    align-self: center;
+    align-self: start;
   }
   .modal-header .modal-institution {
     font-size: 0.8rem;
