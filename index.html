@@ -354,8 +354,167 @@
     gap: 0.75rem 1rem;
   }
   .modal-divider { border: none; border-top: 1px solid var(--border); }
-  .modal-suggest-link { font-size: 0.78rem; color: var(--text-muted); text-align: center; }
-  .modal-suggest-link a { color: var(--navy-mid); font-weight: 500; }
+  /* ---- INLINE SUGGEST FORM ---- */
+  .suggest-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 100%;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.55rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .suggest-toggle:hover { border-color: var(--navy-mid); color: var(--navy); background: var(--cream); }
+  .suggest-toggle svg { transition: transform 0.25s; }
+  .suggest-toggle.open svg { transform: rotate(180deg); }
+
+  .suggest-form-wrap {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease;
+  }
+  .suggest-form-wrap.open { max-height: 600px; }
+
+  .suggest-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1rem;
+    background: var(--cream);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .suggest-form-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 0.1rem;
+  }
+
+  .suggest-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .suggest-form input,
+  .suggest-form select,
+  .suggest-form textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.84rem;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--white);
+    color: var(--text);
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  .suggest-form input:focus,
+  .suggest-form select:focus,
+  .suggest-form textarea:focus { outline: none; border-color: var(--navy-mid); }
+  .suggest-form textarea { resize: vertical; min-height: 72px; }
+
+  .suggest-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+
+  .suggest-submit {
+    align-self: flex-start;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .suggest-submit:hover { background: var(--navy-mid); }
+  .suggest-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .suggest-feedback {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    display: none;
+  }
+  .suggest-feedback.success { background: #e8f4ec; color: var(--green); display: block; }
+  .suggest-feedback.error   { background: #fdecea; color: #a33030;      display: block; }
+
+  .suggest-note { font-size: 0.72rem; color: var(--text-muted); }
+
+  /* ---- DEPARTED CHECKBOX ---- */
+  .departed-check-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.6rem 0.75rem;
+    background: #fff8ee;
+    border: 1px solid #f0d89a;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .departed-check-wrap input[type="checkbox"] {
+    width: 15px; height: 15px;
+    accent-color: var(--navy);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .departed-check-wrap span {
+    font-size: 0.83rem;
+    color: #7a5500;
+    font-weight: 500;
+  }
+  .field-update-section { transition: opacity 0.2s; }
+  .field-update-section.dimmed { opacity: 0.35; pointer-events: none; }
+
+  /* ---- HEADER CHOICE PANEL ---- */
+  .modal-choice-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 0.5rem 0 0.25rem;
+  }
+  .modal-choice-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.9rem 1.1rem;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    width: 100%;
+  }
+  .modal-choice-btn:hover { border-color: var(--navy-mid); background: var(--white); box-shadow: 0 2px 8px rgba(26,39,68,0.08); }
+  .modal-choice-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .modal-choice-icon svg { color: white; }
+  .modal-choice-text strong { display: block; font-size: 0.88rem; color: var(--navy); }
+  .modal-choice-text span  { display: block; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.1rem; }
 
   /* ---- PAGINATION ---- */
   .pagination {
@@ -458,9 +617,9 @@
 </div>
 
 <script>
-// ── CONFIG — edit these two lines ───────────────────────────
-const DATA_URL    = 'instructors.json';
-const SUGGEST_URL = 'https://forms.google.com/YOUR_FORM_ID'; // ← replace after creating your Google Form
+// ── CONFIG ───────────────────────────────────────────────────
+const DATA_URL       = 'instructors.json';
+const FORMSPREE_URL  = 'https://formspree.io/f/xgondkzv';
 // ────────────────────────────────────────────────────────────
 
 const PER_PAGE = 60;
@@ -661,9 +820,130 @@ function openModal(p) {
   }
 
   html += `<hr class="modal-divider">
-    <p class="modal-suggest-link">See an error? <a href="${esc(SUGGEST_URL)}" target="_blank" rel="noopener">Suggest an update</a></p>`;
+
+  <!-- Inline suggest form -->
+  <button class="suggest-toggle" id="suggestToggle" type="button" aria-expanded="false">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Suggest an update
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+
+  <div class="suggest-form-wrap" id="suggestFormWrap">
+    <form class="suggest-form" id="suggestForm" novalidate>
+      <input type="hidden" name="submission_type"  value="update" />
+      <input type="hidden" name="instructor_name"  id="sfInstructorName" />
+      <input type="hidden" name="instructor_inst"  id="sfInstructorInst" />
+      <p class="suggest-form-title">What needs updating?</p>
+
+      <div class="suggest-form-row">
+        <label>Your name
+          <input type="text" name="submitter_name" placeholder="Jane Smith" />
+        </label>
+        <label>Your email
+          <input type="email" name="submitter_email" placeholder="you@example.com" required />
+        </label>
+      </div>
+
+      <label class="departed-check-wrap">
+        <input type="checkbox" name="no_longer_at_institution" id="departedCheck" value="yes" />
+        <span>This instructor is no longer at this institution</span>
+      </label>
+
+      <div class="field-update-section" id="fieldUpdateSection">
+        <label>Field to update
+          <select name="field">
+            <option value="">— select a field —</option>
+            <option>Name</option>
+            <option>Email</option>
+            <option>Title</option>
+            <option>Status</option>
+            <option>Terminal Degree</option>
+            <option>Degree-Granting Institution</option>
+            <option>Degree Specialization</option>
+            <option>Other Areas Taught</option>
+            <option>Faculty Profile URL</option>
+            <option>Other / General</option>
+          </select>
+        </label>
+        <label style="margin-top:0.7rem">Correct value / description of change
+          <textarea name="correction" placeholder="e.g. &ldquo;Should be Associate Professor, not Assistant Professor&rdquo;"></textarea>
+        </label>
+      </div>
+
+      <div class="suggest-feedback" id="suggestFeedback"></div>
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+        <button class="suggest-submit" type="submit" id="suggestSubmit">Send suggestion</button>
+        <span class="suggest-note">Sent directly to the directory maintainer.</span>
+      </div>
+    </form>
+  </div>`;
 
   document.getElementById('modalBody').innerHTML = html;
+
+  // Toggle open/close
+  document.getElementById('suggestToggle').addEventListener('click', function() {
+    const wrap = document.getElementById('suggestFormWrap');
+    const isOpen = wrap.classList.toggle('open');
+    this.classList.toggle('open', isOpen);
+    this.setAttribute('aria-expanded', isOpen);
+  });
+
+  // Pre-fill hidden fields
+  document.getElementById('sfInstructorName').value = p.name || '';
+  document.getElementById('sfInstructorInst').value = p.institution || '';
+
+  // Departed checkbox dims the field-update section
+  document.getElementById('departedCheck').addEventListener('change', function() {
+    document.getElementById('fieldUpdateSection').classList.toggle('dimmed', this.checked);
+  });
+
+  // Submit
+  document.getElementById('suggestForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn      = document.getElementById('suggestSubmit');
+    const feedback = document.getElementById('suggestFeedback');
+    const email    = this.querySelector('[name="submitter_email"]').value.trim();
+    const departed = this.querySelector('[name="no_longer_at_institution"]').checked;
+    const correction = this.querySelector('[name="correction"]').value.trim();
+
+    if (!email) {
+      feedback.className = 'suggest-feedback error';
+      feedback.textContent = 'Please enter your email address.';
+      return;
+    }
+    if (!departed && !correction) {
+      feedback.className = 'suggest-feedback error';
+      feedback.textContent = 'Please describe the correction, or check the departure box.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    feedback.className = 'suggest-feedback';
+
+    try {
+      const res = await fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(this))),
+      });
+      if (res.ok) {
+        feedback.className = 'suggest-feedback success';
+        feedback.textContent = '✓ Suggestion received — thank you!';
+        this.reset();
+        document.getElementById('sfInstructorName').value = p.name || '';
+        document.getElementById('sfInstructorInst').value = p.institution || '';
+        document.getElementById('fieldUpdateSection').classList.remove('dimmed');
+        btn.textContent = 'Sent!';
+      } else { throw new Error('Server error'); }
+    } catch {
+      feedback.className = 'suggest-feedback error';
+      feedback.textContent = 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.textContent = 'Send suggestion';
+    }
+  });
+
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -679,8 +959,203 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
-// ---- SUGGEST BUTTON ----
-document.getElementById('suggestBtn').addEventListener('click', () => window.open(SUGGEST_URL, '_blank'));
+// ---- SHARED FORM SUBMIT HELPER ----
+async function submitToFormspree(form, onSuccess) {
+  const btn      = form.querySelector('.suggest-submit');
+  const feedback = form.querySelector('.suggest-feedback');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  feedback.className = 'suggest-feedback';
+  try {
+    const res = await fetch(FORMSPREE_URL, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.fromEntries(new FormData(form))),
+    });
+    if (res.ok) {
+      feedback.className = 'suggest-feedback success';
+      feedback.textContent = '✓ Received — thank you!';
+      onSuccess && onSuccess();
+      btn.textContent = 'Sent!';
+    } else { throw new Error(); }
+  } catch {
+    feedback.className = 'suggest-feedback error';
+    feedback.textContent = 'Something went wrong. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Send';
+  }
+}
+
+// ---- HEADER SUGGEST BUTTON ----
+document.getElementById('suggestBtn').addEventListener('click', () => openHeaderModal('choice'));
+
+function openHeaderModal(view) {
+  const nameEl = document.getElementById('modalName');
+  const instEl = document.getElementById('modalInstitution');
+  const existingLink = document.getElementById('modalProfileLink');
+  if (existingLink) existingLink.remove();
+
+  if (view === 'choice') {
+    nameEl.textContent = 'How can we help?';
+    instEl.textContent = 'Choose an option below.';
+    document.getElementById('modalBody').innerHTML = `
+      <div class="modal-choice-panel">
+        <button class="modal-choice-btn" id="choiceUpdate">
+          <div class="modal-choice-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <div class="modal-choice-text">
+            <strong>Suggest an update</strong>
+            <span>Correct info for an existing instructor, or flag a departure</span>
+          </div>
+        </button>
+        <button class="modal-choice-btn" id="choiceNew">
+          <div class="modal-choice-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+          <div class="modal-choice-text">
+            <strong>Add a new instructor</strong>
+            <span>Submit details for someone not yet in the directory</span>
+          </div>
+        </button>
+      </div>`;
+
+    document.getElementById('choiceUpdate').addEventListener('click', () => openHeaderModal('update'));
+    document.getElementById('choiceNew').addEventListener('click',    () => openHeaderModal('new'));
+
+  } else if (view === 'update') {
+    nameEl.innerHTML = `<span style="cursor:pointer;opacity:0.7;font-size:0.9rem" id="backToChoice">← Back</span>&ensp;Suggest an Update`;
+    instEl.textContent = 'Flag an error or a departure for any instructor.';
+    document.getElementById('modalBody').innerHTML = `
+      <div class="suggest-form-wrap open">
+        <form class="suggest-form" id="suggestFormHeader" novalidate>
+          <input type="hidden" name="submission_type" value="update" />
+          <div class="suggest-form-row">
+            <label>Your name<input type="text" name="submitter_name" placeholder="Jane Smith" /></label>
+            <label>Your email<input type="email" name="submitter_email" placeholder="you@example.com" required /></label>
+          </div>
+          <div class="suggest-form-row">
+            <label>Instructor name<input type="text" name="instructor_name" placeholder="Dr. Jane Smith" required /></label>
+            <label>Institution<input type="text" name="instructor_inst" placeholder="University of Michigan" required /></label>
+          </div>
+          <label class="departed-check-wrap">
+            <input type="checkbox" name="no_longer_at_institution" id="departedCheckH" value="yes" />
+            <span>This instructor is no longer at this institution</span>
+          </label>
+          <div class="field-update-section" id="fieldUpdateSectionH">
+            <label>Field to update
+              <select name="field">
+                <option value="">— select a field —</option>
+                <option>Name</option><option>Email</option><option>Title</option>
+                <option>Status</option><option>Terminal Degree</option>
+                <option>Degree-Granting Institution</option><option>Degree Specialization</option>
+                <option>Other Areas Taught</option><option>Faculty Profile URL</option>
+                <option>Other / General</option>
+              </select>
+            </label>
+            <label style="margin-top:0.7rem">Correct value / description of change
+              <textarea name="correction" placeholder="Describe what should be changed…"></textarea>
+            </label>
+          </div>
+          <div class="suggest-feedback"></div>
+          <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+            <button class="suggest-submit" type="submit">Send suggestion</button>
+            <span class="suggest-note">Sent directly to the directory maintainer.</span>
+          </div>
+        </form>
+      </div>`;
+
+    document.getElementById('backToChoice').addEventListener('click', () => openHeaderModal('choice'));
+    document.getElementById('departedCheckH').addEventListener('change', function() {
+      document.getElementById('fieldUpdateSectionH').classList.toggle('dimmed', this.checked);
+    });
+    document.getElementById('suggestFormHeader').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email    = this.querySelector('[name="submitter_email"]').value.trim();
+      const instName = this.querySelector('[name="instructor_name"]').value.trim();
+      const inst     = this.querySelector('[name="instructor_inst"]').value.trim();
+      const departed = this.querySelector('[name="no_longer_at_institution"]').checked;
+      const correction = this.querySelector('[name="correction"]').value.trim();
+      const feedback = this.querySelector('.suggest-feedback');
+      if (!email || !instName || !inst) {
+        feedback.className = 'suggest-feedback error';
+        feedback.textContent = 'Please fill in your email, the instructor name, and institution.';
+        return;
+      }
+      if (!departed && !correction) {
+        feedback.className = 'suggest-feedback error';
+        feedback.textContent = 'Please describe the correction, or check the departure box.';
+        return;
+      }
+      await submitToFormspree(this, () => this.reset());
+    });
+
+  } else if (view === 'new') {
+    nameEl.innerHTML = `<span style="cursor:pointer;opacity:0.7;font-size:0.9rem" id="backToChoice">← Back</span>&ensp;Add a New Instructor`;
+    instEl.textContent = 'Fill in as much as you know — all fields except name are optional.';
+    document.getElementById('modalBody').innerHTML = `
+      <div class="suggest-form-wrap open">
+        <form class="suggest-form" id="suggestFormNew" novalidate>
+          <input type="hidden" name="submission_type" value="new_instructor" />
+          <div class="suggest-form-row">
+            <label>Your name<input type="text" name="submitter_name" placeholder="Jane Smith" /></label>
+            <label>Your email<input type="email" name="submitter_email" placeholder="you@example.com" required /></label>
+          </div>
+          <hr class="modal-divider" style="margin:0.25rem 0" />
+          <p class="suggest-form-title">New Instructor Details</p>
+          <div class="suggest-form-row">
+            <label>Full name<input type="text" name="new_name" placeholder="Dr. Robert Chen" required /></label>
+            <label>Institution<input type="text" name="new_institution" placeholder="University of Michigan" required /></label>
+          </div>
+          <div class="suggest-form-row">
+            <label>Email<input type="email" name="new_email" placeholder="rchen@university.edu" /></label>
+            <label>Title<input type="text" name="new_title" placeholder="Assistant Professor" /></label>
+          </div>
+          <div class="suggest-form-row">
+            <label>Status
+              <select name="new_status">
+                <option value="">— unknown —</option>
+                <option>FT</option><option>Adjunct</option><option>Lecturer</option>
+                <option>Instructor</option><option>Emeritus</option><option>VAP</option>
+                <option>Artist in Residence</option>
+              </select>
+            </label>
+            <label>Terminal Degree<input type="text" name="new_terminal_degree" placeholder="PhD, DMA, MM…" /></label>
+          </div>
+          <div class="suggest-form-row">
+            <label>Degree-Granting Institution<input type="text" name="new_deg_inst" placeholder="University of North Texas" /></label>
+            <label>Degree Specialization<input type="text" name="new_deg_spec" placeholder="Music Theory" /></label>
+          </div>
+          <label>Other Areas Taught<input type="text" name="new_other_areas" placeholder="Music History, Ear Training…" /></label>
+          <label>Faculty Profile URL<input type="url" name="new_profile_url" placeholder="https://…" /></label>
+          <label>Additional notes<textarea name="new_notes" placeholder="Anything else we should know…"></textarea></label>
+          <div class="suggest-feedback"></div>
+          <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+            <button class="suggest-submit" type="submit">Submit new instructor</button>
+            <span class="suggest-note">Reviewed before being added to the directory.</span>
+          </div>
+        </form>
+      </div>`;
+
+    document.getElementById('backToChoice').addEventListener('click', () => openHeaderModal('choice'));
+    document.getElementById('suggestFormNew').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = this.querySelector('[name="submitter_email"]').value.trim();
+      const name  = this.querySelector('[name="new_name"]').value.trim();
+      const inst  = this.querySelector('[name="new_institution"]').value.trim();
+      const feedback = this.querySelector('.suggest-feedback');
+      if (!email || !name || !inst) {
+        feedback.className = 'suggest-feedback error';
+        feedback.textContent = 'Please fill in your email, the instructor\'s name, and institution.';
+        return;
+      }
+      await submitToFormspree(this, () => this.reset());
+    });
+  }
+
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
 
 // ---- INIT: fetch JSON ----
 async function init() {
