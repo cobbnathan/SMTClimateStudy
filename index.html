@@ -268,7 +268,9 @@
     max-width: 560px;
     width: 100%;
     max-height: 85vh;
-    overflow-y: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     position: relative;
     animation: modalIn 0.22s ease;
@@ -283,6 +285,7 @@
     padding: 1.3rem 1.5rem 1.1rem;
     border-radius: 12px 12px 0 0;
     position: relative;
+    flex-shrink: 0;
   }
   .modal-header h2 {
     font-family: 'Libre Baskerville', serif;
@@ -298,6 +301,44 @@
     transition: border-color 0.15s;
   }
   .modal-header h2 a:hover { border-color: var(--gold); }
+  .modal-header.has-back {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: start;
+    gap: 0.5rem;
+  }
+  .modal-header.has-back h2 {
+    grid-column: 2;
+    text-align: center;
+    padding-right: 0;
+  }
+  .modal-back-btn {
+    grid-column: 1;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.65);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+    padding: 0.15rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color 0.15s;
+    white-space: nowrap;
+    align-self: center;
+  }
+  .modal-back-btn:hover { color: var(--white); }
+  .modal-header.has-back .modal-institution {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+  .modal-header.has-back .modal-close {
+    grid-column: 3;
+    position: static;
+    justify-self: end;
+    align-self: center;
+  }
   .modal-header .modal-institution {
     font-size: 0.8rem;
     color: var(--gold-light);
@@ -331,6 +372,8 @@
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
+    overflow-y: auto;
+    flex: 1;
   }
   .modal-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
   .modal-section { display: flex; flex-direction: column; gap: 0.25rem; }
@@ -376,7 +419,7 @@
   .suggest-toggle.open svg { transform: rotate(180deg); }
 
   .suggest-form-wrap {
-    overflow: auto;
+    overflow: hidden;
     max-height: 0;
     transition: max-height 0.3s ease;
   }
@@ -619,7 +662,7 @@
 <script>
 // ── CONFIG ───────────────────────────────────────────────────
 const DATA_URL       = 'instructors.json';
-const FORMSPREE_URL  = 'https://formspree.io/f/xgondkzv';
+const FORMSPREE_URL  = 'https://formspree.io/f/xgondkzv'; // ← replace with your Formspree endpoint
 // ────────────────────────────────────────────────────────────
 
 const PER_PAGE = 60;
@@ -745,7 +788,13 @@ document.getElementById('degreeFilter').addEventListener('change', applyFilters)
 
 // ---- MODAL ----
 function openModal(p) {
-  const nameEl = document.getElementById('modalName');
+  const nameEl   = document.getElementById('modalName');
+  const headerEl = document.getElementById('modalHeader');
+
+  // Reset any header state from previous views
+  headerEl.classList.remove('has-back');
+  const existingBack = document.getElementById('modalBackBtn');
+  if (existingBack) existingBack.remove();
   // Name links to profile if available
   nameEl.innerHTML = p.profile_url
     ? `<a href="${esc(p.profile_url)}" target="_blank" rel="noopener">${esc(p.name)}</a>`
@@ -990,10 +1039,16 @@ async function submitToFormspree(form, onSuccess) {
 document.getElementById('suggestBtn').addEventListener('click', () => openHeaderModal('choice'));
 
 function openHeaderModal(view) {
-  const nameEl = document.getElementById('modalName');
-  const instEl = document.getElementById('modalInstitution');
+  const nameEl   = document.getElementById('modalName');
+  const instEl   = document.getElementById('modalInstitution');
+  const headerEl = document.getElementById('modalHeader');
   const existingLink = document.getElementById('modalProfileLink');
   if (existingLink) existingLink.remove();
+
+  // Reset header state
+  headerEl.classList.remove('has-back');
+  const existingBack = document.getElementById('modalBackBtn');
+  if (existingBack) existingBack.remove();
 
   if (view === 'choice') {
     nameEl.textContent = 'How can we help?';
@@ -1024,8 +1079,17 @@ function openHeaderModal(view) {
     document.getElementById('choiceNew').addEventListener('click',    () => openHeaderModal('new'));
 
   } else if (view === 'update') {
-    nameEl.innerHTML = `<span style="cursor:pointer;opacity:0.7;font-size:0.9rem" id="backToChoice">← Back</span>&ensp;Suggest an Update`;
+    headerEl.classList.add('has-back');
+    const backBtn = document.createElement('button');
+    backBtn.id = 'modalBackBtn';
+    backBtn.className = 'modal-back-btn';
+    backBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Back`;
+    backBtn.addEventListener('click', () => openHeaderModal('choice'));
+    headerEl.insertBefore(backBtn, nameEl);
+
+    nameEl.textContent = 'Suggest an Update';
     instEl.textContent = 'Flag an error or a departure for any instructor.';
+
     document.getElementById('modalBody').innerHTML = `
       <div class="suggest-form-wrap open">
         <form class="suggest-form" id="suggestFormHeader" novalidate>
@@ -1065,7 +1129,6 @@ function openHeaderModal(view) {
         </form>
       </div>`;
 
-    document.getElementById('backToChoice').addEventListener('click', () => openHeaderModal('choice'));
     document.getElementById('departedCheckH').addEventListener('change', function() {
       document.getElementById('fieldUpdateSectionH').classList.toggle('dimmed', this.checked);
     });
@@ -1091,8 +1154,17 @@ function openHeaderModal(view) {
     });
 
   } else if (view === 'new') {
-    nameEl.innerHTML = `<span style="cursor:pointer;opacity:0.7;font-size:0.9rem" id="backToChoice">← Back</span>&ensp;Add a New Instructor`;
+    headerEl.classList.add('has-back');
+    const backBtn = document.createElement('button');
+    backBtn.id = 'modalBackBtn';
+    backBtn.className = 'modal-back-btn';
+    backBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Back`;
+    backBtn.addEventListener('click', () => openHeaderModal('choice'));
+    headerEl.insertBefore(backBtn, nameEl);
+
+    nameEl.textContent = 'Add a New Instructor';
     instEl.textContent = 'Fill in as much as you know — all fields except name are optional.';
+
     document.getElementById('modalBody').innerHTML = `
       <div class="suggest-form-wrap open">
         <form class="suggest-form" id="suggestFormNew" novalidate>
@@ -1137,7 +1209,6 @@ function openHeaderModal(view) {
         </form>
       </div>`;
 
-    document.getElementById('backToChoice').addEventListener('click', () => openHeaderModal('choice'));
     document.getElementById('suggestFormNew').addEventListener('submit', async function(e) {
       e.preventDefault();
       const email = this.querySelector('[name="submitter_email"]').value.trim();
