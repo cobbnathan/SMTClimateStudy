@@ -625,7 +625,7 @@
         <option value="Non-music Doctorate">Non-music Doctorate</option>
         <option value="Bachelor's">Bachelor's</option>
       </select>
-      <button class="suggest-btn" id="suggestBtn">Suggest an Update</button>
+      <button class="suggest-btn" id="suggestBtn">Suggest a New Instructor</button>
     </div>
   </div>
 </header>
@@ -1032,7 +1032,7 @@ async function submitToFormspree(form, onSuccess) {
 }
 
 // ---- HEADER SUGGEST BUTTON ----
-document.getElementById('suggestBtn').addEventListener('click', () => openHeaderModal('choice'));
+document.getElementById('suggestBtn').addEventListener('click', () => openHeaderModal('new'));
 
 function openHeaderModal(view) {
   const nameEl   = document.getElementById('modalName');
@@ -1150,14 +1150,6 @@ function openHeaderModal(view) {
     });
 
   } else if (view === 'new') {
-    headerEl.classList.add('has-back');
-    const backBtn = document.createElement('button');
-    backBtn.id = 'modalBackBtn';
-    backBtn.className = 'modal-back-btn';
-    backBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Back`;
-    backBtn.addEventListener('click', () => openHeaderModal('choice'));
-    headerEl.insertBefore(backBtn, nameEl);
-
     nameEl.textContent = 'Add a New Instructor';
     instEl.textContent = 'Fill in as much as you know — all fields except name are optional.';
 
