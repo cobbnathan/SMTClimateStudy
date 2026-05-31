@@ -845,7 +845,7 @@ function openModal(p) {
 
   html += `<hr class="modal-divider"><div class="modal-grid">`;
   [
-    { label: 'Terminal Degree',            value: p.terminal_degree,                   hint: 'e.g. PhD, DMA, MM' },
+    { label: 'Terminal Degree',            value: (p.terminal_degree && p.terminal_degree.toLowerCase() !== 'unknown') ? p.terminal_degree : null, hint: 'e.g. PhD, DMA, MM' },
     { label: 'Degree Type',                value: isValidDegType ? p.degree_type : null, hint: 'e.g. Doctorate, Masters' },
     { label: 'Degree-Granting Institution',value: p.degree_granting_inst,              hint: 'e.g. University of North Texas' },
     { label: 'Degree Specialization',      value: p.degree_specialization,             hint: 'e.g. Music Theory, Composition' },
