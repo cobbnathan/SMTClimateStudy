@@ -387,6 +387,14 @@
   }
   .modal-section-value a { color: var(--navy-mid); text-decoration: none; }
   .modal-section-value a:hover { text-decoration: underline; }
+  .modal-hint {
+    display: block;
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-top: 1px;
+    opacity: 0.75;
+  }
   .modal-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -837,14 +845,17 @@ function openModal(p) {
 
   html += `<hr class="modal-divider"><div class="modal-grid">`;
   [
-    { label: 'Terminal Degree',            value: p.terminal_degree },
-    { label: 'Degree Type',                value: isValidDegType ? p.degree_type : null },
-    { label: 'Degree-Granting Institution',value: p.degree_granting_inst },
-    { label: 'Degree Specialization',      value: p.degree_specialization },
+    { label: 'Terminal Degree',            value: p.terminal_degree,                   hint: 'e.g. PhD, DMA, MM' },
+    { label: 'Degree Type',                value: isValidDegType ? p.degree_type : null, hint: 'e.g. Doctorate, Masters' },
+    { label: 'Degree-Granting Institution',value: p.degree_granting_inst,              hint: 'e.g. University of North Texas' },
+    { label: 'Degree Specialization',      value: p.degree_specialization,             hint: 'e.g. Music Theory, Composition' },
   ].forEach(f => {
+    const val = f.value
+      ? esc(f.value)
+      : `—<span class="modal-hint">${f.hint}</span>`;
     html += `<div class="modal-section">
       <div class="modal-section-label">${f.label}</div>
-      <div class="modal-section-value">${esc(f.value || '—')}</div>
+      <div class="modal-section-value">${val}</div>
     </div>`;
   });
   html += `</div>`;
