@@ -863,7 +863,7 @@ function openModal(p) {
   // Optional extra fields
   const extras = [
     { label: 'Other Areas Taught', value: p.other_areas },
-    { label: 'Notes',              value: p.notes },
+    // { label: 'Notes',              value: p.notes }, INTERNAL FIELD
   ].filter(f => f.value);
   if (extras.length) {
     html += `<hr class="modal-divider">`;
